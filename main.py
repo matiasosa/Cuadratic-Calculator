@@ -5,10 +5,6 @@ from tkinter import messagebox
 import tkinter as tk
 from tkmacosx import Button
 
-r1 = []
-r2 = []
-errores = []
-
 def is_integer_num(n):
     if isinstance(n, int):
         return True
@@ -16,30 +12,57 @@ def is_integer_num(n):
         return n.is_integer()
     return False
 
-def polinomica_text_func(a, b, c):
-        if is_integer_num(a):
-            if is_integer_num(b):
-                if is_integer_num(c):
-                    return "%ix² + %ix + %i"
-                else: 
-                    return "%ix² + %ix + %.1f"
-            else:
-                if is_integer_num(c):
-                    return "%ix² + %.1fx + %i"
-                else:
-                    return "%ix² + %.1fx + %.1f"
+def polynomial_text_func(a, b, c):
+    if is_integer_num(a):
+        if is_integer_num(b):
+            if is_integer_num(c):
+                return "%ix² + %ix + %i"
+            else: 
+                return "%ix² + %ix + %.1f"
         else:
-            if is_integer_num(b):
-                if is_integer_num(c):
-                    return "%.1fx² + %ix + %i"
-                else:
-                    return "%.1fx² + %ix + %.1f"
+            if is_integer_num(c):
+                return "%ix² + %.1fx + %i"
             else:
-                if is_integer_num(c):
-                    return "%.1fx² + %1fx + %i"
-                else:
-                    return "%.1fx² + %1fx + %.1f"
-        
+                return "%ix² + %.1fx + %.1f"
+    else:
+        if is_integer_num(b):
+            if is_integer_num(c):
+                return "%.1fx² + %ix + %i"
+            else:
+                return "%.1fx² + %ix + %.1f"
+        else:
+            if is_integer_num(c):
+                return "%.1fx² + %1fx + %i"
+            else:
+                return "%.1fx² + %1fx + %.1f"
+
+def canonic_text_func(a, xv, yv):
+    if is_integer_num(a):
+        if is_integer_num(xv):
+            if is_integer_num(yv):
+                return "%i . (x - %i)² + %i"
+            else: 
+                return "%i . (x - %i)² + %.1f"
+        else:
+            if is_integer_num(yv):
+                return "%i . (x - %.1f)² + %i" 
+            else:
+                return "%i . (x - %.1f)² + %.1f"
+    else:
+        if is_integer_num(xv):
+            if is_integer_num(yv):
+                return "%.1f . (x - %i)² + %i" 
+            else:
+                return "%.1f . (x - %i)² + %.1f"
+        else:
+            if is_integer_num(yv):
+                return "%.1f . (x - %.1f)² + %i" 
+            else:
+                return "%.1f . (x - %.1f)² + %.1f"
+  
+r1 = []
+r2 = []
+errores = []
 def run():
     while True:
 
@@ -96,39 +119,45 @@ def run():
 
         #polinomic formula
         formulaPol.grid(column=1,row=12)
-        polinomicaText = polinomica_text_func(a, b, c)
-        polinomica = Label(text=polinomicaText %(a, b, c), width=14)
-        polinomica.grid(column=1,row=13)
+        polynomialText = polynomial_text_func(a, b, c)
+        polynomial = Label(text=polynomialText %(a, b, c), width=14)
+        polynomial.grid(column=1,row=13)
 
         #canonic formula
-        xv = -b/(2*a)
-        yv = a * (xv*xv) + (b * xv) + c 
+        if a != 0:
+            xv = -b/(2*a)
+            yv = a * (xv*xv) + (b * xv) + c 
+            formulaCan.grid(column=1,row=14)
+            canonicText = canonic_text_func(a, xv, yv)
+        else:
+            xv = yv = 0
+            canonicText = "%i . (x - %i)² + %i"
 
-        formulaCan.grid(column=1,row=14)
-        canonicaText = canonica_text_func(a, xv, yv) #TODO_FUNC "%.1f(x - %.1f)² + %.1f"
-        canonica = Label(text=canonicaText %(a, xv, yv), width=14)
-        canonica.grid(column=1,row=15)
 
+        canonic = Label(text=canonicText %(a, xv, yv), width=14)
+        canonic.grid(column=1,row=15)
+        
         #check if belongs to real numbers
         try:
             result1 = (-b + math.sqrt(b * b - 4 * a * c)) / (2 * a)  
             result2 = (-b - math.sqrt(b * b - 4 * a * c)) / (2 * a)
-
+            
             for label in errores:
                 label.destroy()
 
             printValue1  = "Valor 1 = %i"  if is_integer_num(result1) else "Valor 1 = %.2f" 
-            x1 = Label(text=printValue1 % resultado1, font=("Bold", 12), fg = "white", bg = "blue", width=13) 
+            x1 = Label(text=printValue1 % result1, font=("Bold", 12), fg = "white", bg = "#308523", width=13) 
             r1.append(x1)
             x1.grid(column=1, row=9)
-   
+            
             printValue2  = "Valor 2 = %i"  if is_integer_num(result2) else "Valor 2 = %.2f" 
-            x2 = Label(text=printValue2 % result2, font=("Bold", 12), fg = "white", bg = "blue", width=13) 
+            x2 = Label(text=printValue2 % result2, font=("Bold", 12), fg = "white", bg = "#308523", width=13) 
             r2.append(x2)
             x2.grid(column=1, row=10)
-
+            
             blank_space_2 = Label(text="", bg=bg_color)
             blank_space_2.grid(column=1, row=11)
+            
             break
 
         except:
@@ -139,9 +168,13 @@ def run():
             for label in errores:
                 label.destroy()
 
-            error = Label(text=" x ∉ R", fg = "white", bg = "red")
+            error = Label(text=" x ∉ R", fg = "white", bg = "#ae1919", font=("Bold", 16))
             errores.append(error)
             error.grid(column=1, row=9)
+
+            blank_space_2 = Label(text="", bg=bg_color)
+            blank_space_2.grid(column=1, row=10)
+
             break  
 
 #__MAIN__#
@@ -158,9 +191,9 @@ screen.geometry("490x350")
 text = Label(text = "Ingrese los valores:", bg=bg_color, font=("Bold", 16), fg="white")
 text.grid(column=0, row=0)
 formulaPol = Label(text="Forma polinómica", width=14)
-formula1.grid_forget()
+formulaPol.grid_forget()
 formulaCan = Label(text="Forma canonica", width=14)
-formula2.grid_forget()
+formulaCan.grid_forget()
 
 #valor1 (a)
 value_storage1 = DoubleVar()
@@ -185,8 +218,8 @@ button_frame = Frame(screen, highlightbackground="white", highlightthickness="2"
 calculate = Button(button_frame, text = "CALCULAR", font=("Bold", 12), bg="black", fg="white", bd=4, pady=1, padx=2, command=run)
 calculate.grid(column=1, row=7)
 button_frame.grid(column=1, row=7)
-calculate.bind("<Enter>", lambda e: calcular.config(bg="white", fg="black"))
-calculate.bind("<Leave>", lambda e: calcular.config(bg="black", fg="white"))
+calculate.bind("<Enter>", lambda e: calculate.config(bg="white", fg="black"))
+calculate.bind("<Leave>", lambda e: calculate.config(bg="black", fg="white"))
 
 #blank spaces
 blank_space_0 = Label(text="", bg=bg_color)
@@ -202,5 +235,5 @@ screen.mainloop()
 
 #diseño: ver el posicionamiento de las cosas (a ver si quedan mejor fijas o que se muevan)
 #acciones: boton de clear (que saque los labels que se agregan con los resultados)
-#revisar el codigo de chekero de errores a, b y c
+#revisar el codigo de chekeo de errores a, b y c
 
