@@ -1,4 +1,4 @@
-This is a cuadratic equation calculator."\n"
+This is a cuadratic equation calculator.
 It allows the user to obtein the roots, polynomial and canonical form of the equation.
 It allows three inputs: one for the cuadratic term, other for the x term and the last for the independient term
 
